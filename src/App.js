@@ -152,7 +152,7 @@ export default function Portfolio() {
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center">
             <div className="flex-shrink-0">
               <img 
-                src="/headshot.jpg" 
+                src="/headshot.JPG" 
                 alt="Vikram Iyer"
                 className="w-48 h-48 rounded-full object-cover border-4 border-blue-500/30 shadow-lg shadow-blue-500/20"
               />
