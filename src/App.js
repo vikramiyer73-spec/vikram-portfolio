@@ -6,22 +6,32 @@ export default function Portfolio() {
 
   const projects = [
     {
+      title: "Grad Pad Website Redesign",
+      description: "Led redesign efforts for 10+ web pages at Grad Pad, collaborating with product stakeholders to improve layout consistency and user experience. Supported full-site redesign initiative using Figma to increase website engagement.",
+      tags: ["Figma", "UI/UX Design", "Product Design", "Stakeholder Collaboration"],
+      link: null,
+      confidential: true
+    },
+    {
       title: "SoundCloud Redesign",
       description: "A comprehensive UI/UX redesign of the SoundCloud mobile app, focusing on improved navigation, visual hierarchy, and user engagement through modern interface patterns.",
       tags: ["Figma", "UI/UX", "Mobile Design"],
-      link: "https://www.figma.com/proto/Deq3ULfPyYcm6Y60S39nyu/Soundcloud-redesign?node-id=1-2&p=f&t=wSw8324zVIlCjHhz-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A3"
+      link: "https://www.figma.com/proto/Deq3ULfPyYcm6Y60S39nyu/Soundcloud-redesign?node-id=1-2&p=f&t=wSw8324zVIlCjHhz-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A3",
+      confidential: false
     },
     {
       title: "E-Commerce Prototype",
       description: "Interactive UX prototype for an e-commerce platform, featuring intuitive product discovery, streamlined checkout flow, and responsive design principles.",
       tags: ["Figma", "Prototyping", "UX Design"],
-      link: "https://www.figma.com/proto/8Zb0o9efQIU6RmlXsDdp5a/Vikram-Ecom-V1?node-id=3-2&p=f&t=C1YKRqm0FUrY48nM-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A2"
+      link: "https://www.figma.com/proto/8Zb0o9efQIU6RmlXsDdp5a/Vikram-Ecom-V1?node-id=3-2&p=f&t=C1YKRqm0FUrY48nM-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A2",
+      confidential: false
     },
     {
       title: "Club Event Graphics",
       description: "Promotional graphics designed for UCLA clubs including CKI Senior Spotlight, Theta Chi Cinema, and Game Night events. Each design captures the unique vibe and purpose of the event while engaging the target audience.",
       tags: ["Graphic Design", "Adobe Creative Suite", "Marketing"],
-      link: "#graphics"
+      link: "#graphics",
+      confidential: false
     }
   ];
 
@@ -185,14 +195,18 @@ export default function Portfolio() {
                     </span>
                   ))}
                 </div>
-                {project.link !== "#graphics" ? (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition text-sm">
-                    View Project <ExternalLink size={16} />
-                  </a>
-                ) : (
+                {project.confidential ? (
+                  <span className="text-gray-500 text-sm flex items-center gap-2">
+                    <Figma size={16} /> Confidential client work
+                  </span>
+                ) : project.link === "#graphics" ? (
                   <span className="text-gray-500 text-sm flex items-center gap-2">
                     <Figma size={16} /> See designs below
                   </span>
+                ) : (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition text-sm">
+                    View Project <ExternalLink size={16} />
+                  </a>
                 )}
               </div>
             ))}
