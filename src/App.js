@@ -289,7 +289,7 @@ export default function Portfolio() {
               </div>
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
                 <img 
-                  src="/gradpad-badges.png" 
+                  src="/Gradpad-badges.png" 
                   alt="Grad Pad User Achievement Badges"
                   className="w-full h-auto rounded-lg mb-3"
                 />
