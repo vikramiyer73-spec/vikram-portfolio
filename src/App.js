@@ -303,7 +303,7 @@ export default function Portfolio() {
                 { src: "/panel-discussion.png", alt: "Panel Discussion with Peter Kelly", title: "Panel Discussion Event" },
                 { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Hot Ruby Chocolate Latte" },
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
-                { src: "/gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
+                { src: "/Gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
                 <div 
                   key={index} 
