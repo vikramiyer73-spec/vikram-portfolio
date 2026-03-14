@@ -296,12 +296,12 @@ export default function Portfolio() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { src: "/cki-spotlight.png", alt: "CKI Senior Spotlight - Carter Castanha", title: "CKI Senior Spotlight" },
-                { src: "/theta-cinema.png", alt: "Theta Cinema - Superbad Screening", title: "Theta Chi Cinema Event" },
+                { src: "/theta-cinema.png", alt: "Theta Cinema - Superbad Screening", title: "Theta Chi Philanthropy Event" },
                 { src: "/game-night.png", alt: "Game Night Event", title: "Online Game Night" },
                 { src: "/battle-of-la.png", alt: "Battle of LA - UCLA vs USC Watch Party", title: "UCLA vs USC Watch Party" },
                 { src: "/bls-alumni-night.png", alt: "BLS Alumni Night", title: "BLS Alumni Night" },
                 { src: "/panel-discussion.png", alt: "Panel Discussion with Peter Kelly", title: "Panel Discussion Event" },
-                { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Hot Ruby Chocolate Latte" },
+                { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Menu Spotlight Graphic" },
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
                 { src: "/Gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
