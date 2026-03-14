@@ -13,6 +13,13 @@ export default function Portfolio() {
       confidential: true
     },
     {
+      title: "Terra and Cotta Brand Kit",
+      description: "Complete brand identity design for a hypothetical pottery store, including logo design, color palette, typography system, and brand guidelines to create a cohesive visual identity.",
+      tags: ["Figma", "Brand Design", "Visual Identity", "Design Systems"],
+      link: "https://www.figma.com/design/padm5wS5vEcWtagm7BftMB/Terra-and-Cotta?node-id=0-1&t=q8DiNpx46PbKau4A-1",
+      confidential: false
+    },
+    {
       title: "SoundCloud Redesign",
       description: "A comprehensive UI/UX redesign of the SoundCloud mobile app, focusing on improved navigation, visual hierarchy, and user engagement through modern interface patterns.",
       tags: ["Figma", "UI/UX", "Mobile Design"],
