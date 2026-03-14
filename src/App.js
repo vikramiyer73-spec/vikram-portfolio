@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Linkedin, Mail, ExternalLink, Menu, X, Figma } from 'lucide-react';
 
 export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const projects = [
     {
@@ -54,7 +61,7 @@ export default function Portfolio() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative overflow-x-hidden">
       <style>{`
         @keyframes blob {
           0% {
@@ -79,7 +86,50 @@ export default function Portfolio() {
         .animation-delay-4000 {
           animation-delay: 4s;
         }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        
+        .animate-fadeInUp {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        
+        .scroll-reveal {
+          opacity: 0;
+        }
+        
+        .scroll-reveal.active {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
       `}</style>
+      
       {/* Textured Background Overlay */}
       <div className="fixed inset-0 opacity-30 pointer-events-none" style={{
         backgroundImage: `
@@ -90,14 +140,16 @@ export default function Portfolio() {
         `,
         backgroundSize: '100% 100%, 100% 100%, 100% 100%, 100% 100%'
       }}></div>
+      
       {/* Noise Texture */}
       <div className="fixed inset-0 opacity-20 pointer-events-none" style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'repeat',
         backgroundSize: '200px 200px'
       }}></div>
+
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-sm z-50 border-b border-blue-500/20">
+      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-sm z-50 border-b border-blue-500/20 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
@@ -106,10 +158,10 @@ export default function Portfolio() {
             
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8">
-              <button onClick={() => scrollToSection('about')} className="text-gray-300 hover:text-blue-400 transition">About</button>
-              <button onClick={() => scrollToSection('projects')} className="text-gray-300 hover:text-blue-400 transition">Projects</button>
-              <button onClick={() => scrollToSection('skills')} className="text-gray-300 hover:text-blue-400 transition">Skills</button>
-              <button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-blue-400 transition">Contact</button>
+              <button onClick={() => scrollToSection('about')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">About</button>
+              <button onClick={() => scrollToSection('projects')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Projects</button>
+              <button onClick={() => scrollToSection('skills')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Skills</button>
+              <button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Contact</button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -123,11 +175,11 @@ export default function Portfolio() {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 space-y-2">
-              <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">About</button>
-              <button onClick={() => scrollToSection('projects')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Projects</button>
-              <button onClick={() => scrollToSection('skills')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Skills</button>
-              <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Contact</button>
+            <div className="md:hidden py-4 space-y-2 animate-fadeIn">
+              <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">About</button>
+              <button onClick={() => scrollToSection('projects')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Projects</button>
+              <button onClick={() => scrollToSection('skills')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Skills</button>
+              <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Contact</button>
             </div>
           )}
         </div>
@@ -141,21 +193,22 @@ export default function Portfolio() {
           <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
           <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
         </div>
+        
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fadeInUp">
             Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Vikram Iyer</span>
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-300 mb-4">
+          <p className="text-xl sm:text-2xl text-gray-300 mb-4 animate-fadeInUp stagger-1">
             Cognitive Science Student at UCLA
           </p>
-          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto animate-fadeInUp stagger-2">
             UX Designer | Visual Storyteller | Creative Problem Solver
           </p>
-          <div className="flex justify-center space-x-4 flex-wrap gap-4">
-            <a href="#contact" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition transform hover:scale-105">
+          <div className="flex justify-center space-x-4 flex-wrap gap-4 animate-fadeInUp stagger-3">
+            <a href="#contact" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
               Get In Touch
             </a>
-            <a href="#projects" className="border-2 border-blue-500 text-blue-400 px-8 py-3 rounded-full font-semibold hover:bg-blue-500/10 transition">
+            <a href="#projects" className="border-2 border-blue-500 text-blue-400 px-8 py-3 rounded-full font-semibold hover:bg-blue-500/10 transition-all duration-300">
               View Work
             </a>
           </div>
@@ -164,10 +217,10 @@ export default function Portfolio() {
 
       {/* About Section */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto scroll-reveal">
           <h2 className="text-4xl font-bold text-white mb-12 text-center">About Me</h2>
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center">
-            <div className="flex-shrink-0">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center hover:border-blue-500/40 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20">
+            <div className="flex-shrink-0 transform transition-transform duration-500 hover:scale-105">
               <img 
                 src="/headshot.JPG" 
                 alt="Vikram Iyer"
@@ -187,17 +240,21 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal">Featured Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <div key={index} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition transform hover:scale-105">
+              <div 
+                key={index} 
+                className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
                 <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag, i) => (
-                    <span key={i} className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs">
+                    <span key={i} className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs hover:bg-blue-500/30 transition-colors duration-300">
                       {tag}
                     </span>
                   ))}
@@ -211,8 +268,8 @@ export default function Portfolio() {
                     <Figma size={16} /> See designs below
                   </span>
                 ) : (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition text-sm">
-                    View Project <ExternalLink size={16} />
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group">
+                    View Project <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </a>
                 )}
               </div>
@@ -221,92 +278,48 @@ export default function Portfolio() {
 
           {/* Graphics Showcase */}
           <div id="graphics" className="mt-16">
-            <h3 className="text-3xl font-bold text-white mb-8 text-center">Graphic Designs</h3>
+            <h3 className="text-3xl font-bold text-white mb-8 text-center scroll-reveal">Graphic Designs</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/cki-spotlight.png" 
-                  alt="CKI Senior Spotlight - Carter Castanha"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">CKI Senior Spotlight</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/theta-cinema.png" 
-                  alt="Theta Cinema - Superbad Screening"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Theta Chi Cinema Event</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/game-night.png" 
-                  alt="Game Night Event"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Online Game Night</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/battle-of-la.png" 
-                  alt="Battle of LA - UCLA vs USC Watch Party"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">UCLA vs USC Watch Party</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/bls-alumni-night.png" 
-                  alt="BLS Alumni Night"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">BLS Alumni Night</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/panel-discussion.png" 
-                  alt="Panel Discussion with Peter Kelly"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Panel Discussion Event</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/hot-ruby-chocolate.png" 
-                  alt="Hot Ruby Chocolate Latte Promotion"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Hot Ruby Chocolate Latte</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/spring-menu.png" 
-                  alt="Little Ones Spring Menu"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Spring Menu</p>
-              </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
-                <img 
-                  src="/Gradpad-badges.png" 
-                  alt="Grad Pad User Achievement Badges"
-                  className="w-full h-auto rounded-lg mb-3"
-                />
-                <p className="text-gray-300 text-sm text-center">Grad Pad Achievement Badges</p>
-              </div>
+              {[
+                { src: "/cki-spotlight.png", alt: "CKI Senior Spotlight - Carter Castanha", title: "CKI Senior Spotlight" },
+                { src: "/theta-cinema.png", alt: "Theta Cinema - Superbad Screening", title: "Theta Chi Cinema Event" },
+                { src: "/game-night.png", alt: "Game Night Event", title: "Online Game Night" },
+                { src: "/battle-of-la.png", alt: "Battle of LA - UCLA vs USC Watch Party", title: "UCLA vs USC Watch Party" },
+                { src: "/bls-alumni-night.png", alt: "BLS Alumni Night", title: "BLS Alumni Night" },
+                { src: "/panel-discussion.png", alt: "Panel Discussion with Peter Kelly", title: "Panel Discussion Event" },
+                { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Hot Ruby Chocolate Latte" },
+                { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
+                { src: "/gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
+              ].map((graphic, index) => (
+                <div 
+                  key={index} 
+                  className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <img 
+                    src={graphic.src}
+                    alt={graphic.alt}
+                    className="w-full h-auto rounded-lg mb-3 transform transition-transform duration-500 hover:scale-110"
+                  />
+                  <p className="text-gray-300 text-sm text-center">{graphic.title}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
+      <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">Skills & Technologies</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal">Skills & Technologies</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {skills.map((skill, index) => (
-              <div key={index} className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:scale-110 transition transform">
+              <div 
+                key={index} 
+                className="scroll-reveal bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:scale-110 hover:from-blue-500/30 hover:to-purple-500/30 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform cursor-default"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
                 {skill}
               </div>
             ))}
@@ -315,17 +328,17 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-4xl mx-auto text-center scroll-reveal">
           <h2 className="text-4xl font-bold text-white mb-8">Let's Connect</h2>
           <p className="text-gray-300 text-lg mb-12">
             I'm always open to new opportunities and collaborations. Feel free to reach out!
           </p>
           <div className="flex justify-center space-x-6">
-            <a href="mailto:vikramiyer73@gmail.com" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition transform hover:scale-110">
+            <a href="mailto:vikramiyer73@gmail.com" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30">
               <Mail size={24} className="text-blue-400" />
             </a>
-            <a href="https://www.linkedin.com/in/vikramiyerucla/" target="_blank" rel="noopener noreferrer" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition transform hover:scale-110">
+            <a href="https://www.linkedin.com/in/vikramiyerucla/" target="_blank" rel="noopener noreferrer" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30">
               <Linkedin size={24} className="text-blue-400" />
             </a>
           </div>
@@ -333,11 +346,32 @@ export default function Portfolio() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-blue-500/20">
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-blue-500/20 relative z-10">
         <div className="max-w-6xl mx-auto text-center text-gray-400">
           <p>© 2024 Vikram Iyer. All rights reserved.</p>
         </div>
       </footer>
+      
+      <script dangerouslySetInnerHTML={{__html: `
+        document.addEventListener('DOMContentLoaded', function() {
+          const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+          };
+          
+          const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+              }
+            });
+          }, observerOptions);
+          
+          document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+          });
+        });
+      `}} />
     </div>
   );
 }
