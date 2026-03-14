@@ -11,6 +11,27 @@ export default function Portfolio() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const projects = [
     {
       title: "Grad Pad Website Redesign",
@@ -351,27 +372,6 @@ export default function Portfolio() {
           <p>© 2024 Vikram Iyer. All rights reserved.</p>
         </div>
       </footer>
-      
-      <script dangerouslySetInnerHTML={{__html: `
-        document.addEventListener('DOMContentLoaded', function() {
-          const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-          };
-          
-          const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-              }
-            });
-          }, observerOptions);
-          
-          document.querySelectorAll('.scroll-reveal').forEach(el => {
-            observer.observe(el);
-          });
-        });
-      `}} />
     </div>
   );
 }
