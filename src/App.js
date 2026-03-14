@@ -3,13 +3,6 @@ import { Linkedin, Mail, ExternalLink, Menu, X, Figma } from 'lucide-react';
 
 export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const observerOptions = {
