@@ -221,7 +221,7 @@ export default function Portfolio() {
 
           {/* Graphics Showcase */}
           <div id="graphics" className="mt-16">
-            <h3 className="text-3xl font-bold text-white mb-8 text-center">Event Graphics</h3>
+            <h3 className="text-3xl font-bold text-white mb-8 text-center">Graphic Designs</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
                 <img 
@@ -286,6 +286,14 @@ export default function Portfolio() {
                   className="w-full h-auto rounded-lg mb-3"
                 />
                 <p className="text-gray-300 text-sm text-center">Spring Menu</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/gradpad-badges.png" 
+                  alt="Grad Pad User Achievement Badges"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">Grad Pad Achievement Badges</p>
               </div>
             </div>
           </div>
