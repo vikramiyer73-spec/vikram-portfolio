@@ -215,7 +215,7 @@ export default function Portfolio() {
           {/* Graphics Showcase */}
           <div id="graphics" className="mt-16">
             <h3 className="text-3xl font-bold text-white mb-8 text-center">Event Graphics</h3>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
                 <img 
                   src="/cki-spotlight.png" 
@@ -239,6 +239,46 @@ export default function Portfolio() {
                   className="w-full h-auto rounded-lg mb-3"
                 />
                 <p className="text-gray-300 text-sm text-center">Online Game Night</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/battle-of-la.png" 
+                  alt="Battle of LA - UCLA vs USC Watch Party"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">UCLA vs USC Watch Party</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/bls-alumni-night.png" 
+                  alt="BLS Alumni Night"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">BLS Alumni Night</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/panel-discussion.png" 
+                  alt="Panel Discussion with Peter Kelly"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">Panel Discussion Event</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/hot-ruby-chocolate.png" 
+                  alt="Hot Ruby Chocolate Latte Promotion"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">Hot Ruby Chocolate Latte</p>
+              </div>
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden">
+                <img 
+                  src="/spring-menu.png" 
+                  alt="Little Ones Spring Menu"
+                  className="w-full h-auto rounded-lg mb-3"
+                />
+                <p className="text-gray-300 text-sm text-center">Spring Menu</p>
               </div>
             </div>
           </div>
