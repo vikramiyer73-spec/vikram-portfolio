@@ -11,7 +11,9 @@ export default function Portfolio() {
     { x: 0, y: 0 }
   ]);
   const canvasRef = useRef(null);
-  const orbRefs = [useRef(null), useRef(null), useRef(null)];
+  const orbRef1 = useRef(null);
+  const orbRef2 = useRef(null);
+  const orbRef3 = useRef(null);
 
   // Mouse tracking
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function Portfolio() {
       setMousePosition({ x: e.clientX, y: e.clientY });
       
       // Calculate orb repulsion
+      const orbRefs = [orbRef1, orbRef2, orbRef3];
       const newOrbPositions = orbRefs.map((orbRef) => {
         if (!orbRef.current) return { x: 0, y: 0 };
         
@@ -461,7 +464,7 @@ export default function Portfolio() {
       {/* Floating Shapes */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div 
-          ref={orbRefs[0]}
+          ref={orbRef1}
           className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-float"
           style={{
             transform: `translate(${orbPositions[0].x}px, ${orbPositions[0].y}px)`,
@@ -469,7 +472,7 @@ export default function Portfolio() {
           }}
         ></div>
         <div 
-          ref={orbRefs[1]}
+          ref={orbRef2}
           className="absolute top-40 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-float animation-delay-2000"
           style={{
             transform: `translate(${orbPositions[1].x}px, ${orbPositions[1].y}px)`,
@@ -477,7 +480,7 @@ export default function Portfolio() {
           }}
         ></div>
         <div 
-          ref={orbRefs[2]}
+          ref={orbRef3}
           className="absolute bottom-20 left-1/4 w-36 h-36 bg-pink-500/10 rounded-full blur-xl animate-float animation-delay-4000"
           style={{
             transform: `translate(${orbPositions[2].x}px, ${orbPositions[2].y}px)`,
