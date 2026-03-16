@@ -5,7 +5,6 @@ export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState('default');
-  const [particles, setParticles] = useState([]);
   const canvasRef = useRef(null);
 
   // Mouse tracking
@@ -20,7 +19,7 @@ export default function Portfolio() {
   // Particle system
   useEffect(() => {
     const particleCount = 50;
-    const newParticles = Array.from({ length: particleCount }, (_, i) => ({
+    const particles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
@@ -28,7 +27,6 @@ export default function Portfolio() {
       vy: (Math.random() - 0.5) * 0.5,
       size: Math.random() * 3 + 1
     }));
-    setParticles(newParticles);
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -41,7 +39,7 @@ export default function Portfolio() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      newParticles.forEach(particle => {
+      particles.forEach(particle => {
         // Move particles
         particle.x += particle.vx;
         particle.y += particle.vy;
@@ -57,7 +55,7 @@ export default function Portfolio() {
         ctx.fill();
 
         // Connect nearby particles
-        newParticles.forEach(otherParticle => {
+        particles.forEach(otherParticle => {
           const dx = particle.x - otherParticle.x;
           const dy = particle.y - otherParticle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
