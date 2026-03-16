@@ -5,12 +5,43 @@ export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [cursorVariant, setCursorVariant] = useState('default');
+  const [orbPositions, setOrbPositions] = useState([
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 }
+  ]);
   const canvasRef = useRef(null);
+  const orbRefs = [useRef(null), useRef(null), useRef(null)];
 
   // Mouse tracking
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
+      
+      // Calculate orb repulsion
+      const newOrbPositions = orbRefs.map((orbRef) => {
+        if (!orbRef.current) return { x: 0, y: 0 };
+        
+        const rect = orbRef.current.getBoundingClientRect();
+        const orbCenterX = rect.left + rect.width / 2;
+        const orbCenterY = rect.top + rect.height / 2;
+        
+        const dx = e.clientX - orbCenterX;
+        const dy = e.clientY - orbCenterY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = 200; // Repulsion radius
+        
+        if (distance < maxDistance) {
+          const strength = (1 - distance / maxDistance) * 100;
+          return {
+            x: -dx / distance * strength,
+            y: -dy / distance * strength
+          };
+        }
+        return { x: 0, y: 0 };
+      });
+      
+      setOrbPositions(newOrbPositions);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
@@ -204,8 +235,8 @@ export default function Portfolio() {
       const y = e.clientY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const tiltX = ((y - centerY) / centerY) * -8;
-      const tiltY = ((x - centerX) / centerX) * 8;
+      const tiltX = ((y - centerY) / centerY) * -15; // Increased from -8
+      const tiltY = ((x - centerX) / centerX) * 15; // Increased from 8
       setTilt({ x: tiltX, y: tiltY });
     };
 
@@ -218,10 +249,11 @@ export default function Portfolio() {
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
+        className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20"
         style={{
-          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${tilt.x || tilt.y ? 1.05 : 1})`,
-          transition: 'all 0.3s ease-out'
+          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${tilt.x || tilt.y ? 1.08 : 1})`,
+          transition: 'transform 0.1s ease-out',
+          transformStyle: 'preserve-3d'
         }}
       >
         <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
@@ -428,9 +460,30 @@ export default function Portfolio() {
 
       {/* Floating Shapes */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-float"></div>
-        <div className="absolute top-40 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-float animation-delay-2000"></div>
-        <div className="absolute bottom-20 left-1/4 w-36 h-36 bg-pink-500/10 rounded-full blur-xl animate-float animation-delay-4000"></div>
+        <div 
+          ref={orbRefs[0]}
+          className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-float"
+          style={{
+            transform: `translate(${orbPositions[0].x}px, ${orbPositions[0].y}px)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        ></div>
+        <div 
+          ref={orbRefs[1]}
+          className="absolute top-40 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-float animation-delay-2000"
+          style={{
+            transform: `translate(${orbPositions[1].x}px, ${orbPositions[1].y}px)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        ></div>
+        <div 
+          ref={orbRefs[2]}
+          className="absolute bottom-20 left-1/4 w-36 h-36 bg-pink-500/10 rounded-full blur-xl animate-float animation-delay-4000"
+          style={{
+            transform: `translate(${orbPositions[2].x}px, ${orbPositions[2].y}px)`,
+            transition: 'transform 0.3s ease-out'
+          }}
+        ></div>
       </div>
 
       {/* Navigation */}
