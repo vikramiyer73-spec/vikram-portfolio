@@ -224,10 +224,6 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative overflow-x-hidden">
       <style>{`
-        * {
-          cursor: none !important;
-        }
-        
         @keyframes blob {
           0%, 100% { transform: translate(0px, 0px) scale(1); }
           33% { transform: translate(30px, -50px) scale(1.1); }
@@ -442,7 +438,7 @@ export default function Portfolio() {
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Hi, I'm <span className="text-transparent bg-clip-text gradient-shift text-glitch" data-text="Vikram Iyer">Vikram Iyer</span>
+            Hi, I'm <span className="text-transparent bg-clip-text gradient-shift">Vikram Iyer</span>
           </h1>
           <p className="text-xl sm:text-2xl text-gray-300 mb-4">
             Cognitive Science Student at UCLA
