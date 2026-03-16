@@ -185,6 +185,101 @@ export default function Portfolio() {
     );
   };
 
+  const ProjectCard = ({ project, index }) => {
+    const cardRef = useRef(null);
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const tiltX = ((y - centerY) / centerY) * -8;
+      const tiltY = ((x - centerX) / centerX) * 8;
+      setTilt({ x: tiltX, y: tiltY });
+    };
+
+    const handleMouseLeave = () => {
+      setTilt({ x: 0, y: 0 });
+    };
+
+    return (
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
+        style={{
+          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${tilt.x || tilt.y ? 1.05 : 1})`,
+          transition: 'all 0.3s ease-out'
+        }}
+      >
+        <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
+        <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {project.tags.map((tag, i) => (
+            <span key={i} className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs hover:bg-blue-500/30 transition-colors duration-300">
+              {tag}
+            </span>
+          ))}
+        </div>
+        {project.confidential ? (
+          <span className="text-gray-500 text-sm flex items-center gap-2">
+            <Figma size={16} /> Confidential client work
+          </span>
+        ) : project.link === "#graphics" ? (
+          <span className="text-gray-500 text-sm flex items-center gap-2">
+            <Figma size={16} /> See designs below
+          </span>
+        ) : (
+          <a 
+            href={project.link} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group"
+          >
+            View Project <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+          </a>
+        )}
+      </div>
+    );
+  };
+
+  const GraphicCard = ({ graphic }) => {
+    const cardRef = useRef(null);
+    const [scale, setScale] = useState(1);
+
+    const handleMouseMove = (e) => {
+      setScale(1.05);
+    };
+
+    const handleMouseLeave = () => {
+      setScale(1);
+    };
+
+    return (
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20"
+        style={{
+          transform: `scale(${scale})`,
+          transition: 'all 0.3s ease-out'
+        }}
+      >
+        <img 
+          src={graphic.src}
+          alt={graphic.alt}
+          className="w-full h-auto rounded-lg mb-3"
+        />
+        <p className="text-gray-300 text-sm text-center">{graphic.title}</p>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative overflow-x-hidden">
       <style>{`
@@ -461,38 +556,7 @@ export default function Portfolio() {
           <h2 className="text-4xl font-bold text-white mb-12 text-center">Featured Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <div
-                key={index}
-                className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
-              >
-                <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
-                <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, i) => (
-                    <span key={i} className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-xs hover:bg-blue-500/30 transition-colors duration-300">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                {project.confidential ? (
-                  <span className="text-gray-500 text-sm flex items-center gap-2">
-                    <Figma size={16} /> Confidential client work
-                  </span>
-                ) : project.link === "#graphics" ? (
-                  <span className="text-gray-500 text-sm flex items-center gap-2">
-                    <Figma size={16} /> See designs below
-                  </span>
-                ) : (
-                  <a 
-                    href={project.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group"
-                  >
-                    View Project <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
-                  </a>
-                )}
-              </div>
+              <ProjectCard key={index} project={project} index={index} />
             ))}
           </div>
 
@@ -511,17 +575,7 @@ export default function Portfolio() {
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
                 { src: "/Gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
-                <div
-                  key={index}
-                  className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500"
-                >
-                  <img 
-                    src={graphic.src}
-                    alt={graphic.alt}
-                    className="w-full h-auto rounded-lg mb-3"
-                  />
-                  <p className="text-gray-300 text-sm text-center">{graphic.title}</p>
-                </div>
+                <GraphicCard key={index} graphic={graphic} />
               ))}
             </div>
           </div>
