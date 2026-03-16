@@ -185,42 +185,6 @@ export default function Portfolio() {
     );
   };
 
-  const TiltCard = ({ children, className = "" }) => {
-    const cardRef = useRef(null);
-    const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-    const handleMouseMove = (e) => {
-      if (!cardRef.current) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const tiltX = ((y - centerY) / centerY) * -10;
-      const tiltY = ((x - centerX) / centerX) * 10;
-      setTilt({ x: tiltX, y: tiltY });
-    };
-
-    const handleMouseLeave = () => {
-      setTilt({ x: 0, y: 0 });
-    };
-
-    return (
-      <div
-        ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className={className}
-        style={{
-          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.02, 1.02, 1.02)`,
-          transition: 'transform 0.2s ease-out'
-        }}
-      >
-        {children}
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative overflow-x-hidden">
       <style>{`
