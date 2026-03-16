@@ -438,7 +438,7 @@ export default function Portfolio() {
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Hi, I'm <span className="text-transparent bg-clip-text gradient-shift">Vikram Iyer</span>
+            Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Vikram Iyer</span>
           </h1>
           <p className="text-xl sm:text-2xl text-gray-300 mb-4">
             Cognitive Science Student at UCLA
