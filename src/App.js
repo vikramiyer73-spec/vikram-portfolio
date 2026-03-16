@@ -1,9 +1,86 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Linkedin, Mail, ExternalLink, Menu, X, Figma } from 'lucide-react';
 
 export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [cursorVariant, setCursorVariant] = useState('default');
+  const [particles, setParticles] = useState([]);
+  const canvasRef = useRef(null);
 
+  // Mouse tracking
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Particle system
+  useEffect(() => {
+    const particleCount = 50;
+    const newParticles = Array.from({ length: particleCount }, (_, i) => ({
+      id: i,
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 3 + 1
+    }));
+    setParticles(newParticles);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let animationId;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      newParticles.forEach(particle => {
+        // Move particles
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(96, 165, 250, 0.3)';
+        ctx.fill();
+
+        // Connect nearby particles
+        newParticles.forEach(otherParticle => {
+          const dx = particle.x - otherParticle.x;
+          const dy = particle.y - otherParticle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(otherParticle.x, otherParticle.y);
+            ctx.strokeStyle = `rgba(96, 165, 250, ${0.15 * (1 - distance / 150)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        });
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => cancelAnimationFrame(animationId);
+  }, []);
+
+  // Scroll reveal observer
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -74,31 +151,98 @@ export default function Portfolio() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const MagneticButton = ({ children, href, onClick, className = "" }) => {
+    const buttonRef = useRef(null);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+      if (!buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      setPosition({ x: x * 0.3, y: y * 0.3 });
+    };
+
+    const handleMouseLeave = () => {
+      setPosition({ x: 0, y: 0 });
+    };
+
+    const Component = href ? 'a' : 'button';
+
+    return (
+      <Component
+        ref={buttonRef}
+        href={href}
+        onClick={onClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={className}
+        style={{
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          transition: 'transform 0.2s ease-out'
+        }}
+      >
+        {children}
+      </Component>
+    );
+  };
+
+  const TiltCard = ({ children, className = "" }) => {
+    const cardRef = useRef(null);
+    const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const tiltX = ((y - centerY) / centerY) * -10;
+      const tiltY = ((x - centerX) / centerX) * 10;
+      setTilt({ x: tiltX, y: tiltY });
+    };
+
+    const handleMouseLeave = () => {
+      setTilt({ x: 0, y: 0 });
+    };
+
+    return (
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={className}
+        style={{
+          transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.02, 1.02, 1.02)`,
+          transition: 'transform 0.2s ease-out'
+        }}
+      >
+        {children}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 relative overflow-x-hidden">
       <style>{`
+        * {
+          cursor: none !important;
+        }
+        
         @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
+          0%, 100% { transform: translate(0px, 0px) scale(1); }
+          33% { transform: translate(30px, -50px) scale(1.1); }
+          66% { transform: translate(-20px, 20px) scale(0.9); }
         }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
+        
+        @keyframes glitch {
+          0% { transform: translate(0); }
+          20% { transform: translate(-2px, 2px); }
+          40% { transform: translate(-2px, -2px); }
+          60% { transform: translate(2px, 2px); }
+          80% { transform: translate(2px, -2px); }
+          100% { transform: translate(0); }
         }
         
         @keyframes fadeInUp {
@@ -112,28 +256,21 @@ export default function Portfolio() {
           }
         }
         
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
         
-        .animate-fadeInUp {
-          animation: fadeInUp 0.8s ease-out forwards;
-        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animation-delay-1000 { animation-delay: 1s; }
+        .animation-delay-3000 { animation-delay: 3s; }
         
-        .animate-fadeIn {
-          animation: fadeIn 0.8s ease-out forwards;
+        .glitch:hover {
+          animation: glitch 0.3s infinite;
         }
-        
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
         
         .scroll-reveal {
           opacity: 0;
@@ -142,10 +279,83 @@ export default function Portfolio() {
         .scroll-reveal.active {
           animation: fadeInUp 0.8s ease-out forwards;
         }
+        
+        .gradient-shift {
+          background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+          background-size: 300% 300%;
+          animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        
+        .text-glitch {
+          position: relative;
+        }
+        
+        .text-glitch:hover::before,
+        .text-glitch:hover::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        
+        .text-glitch:hover::before {
+          left: 2px;
+          text-shadow: -2px 0 #ff00de;
+          clip: rect(24px, 550px, 90px, 0);
+          animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        
+        .text-glitch:hover::after {
+          left: -2px;
+          text-shadow: -2px 0 #00fff9;
+          clip: rect(85px, 550px, 140px, 0);
+          animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+          0% { clip: rect(61px, 9999px, 90px, 0); }
+          20% { clip: rect(86px, 9999px, 132px, 0); }
+          40% { clip: rect(23px, 9999px, 56px, 0); }
+          60% { clip: rect(110px, 9999px, 140px, 0); }
+          80% { clip: rect(45px, 9999px, 78px, 0); }
+          100% { clip: rect(71px, 9999px, 120px, 0); }
+        }
       `}</style>
+
+      {/* Custom Cursor */}
+      <div
+        className="fixed w-8 h-8 rounded-full border-2 border-blue-400 pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          left: mousePosition.x - 16,
+          top: mousePosition.y - 16,
+          transform: cursorVariant === 'hover' ? 'scale(1.5)' : 'scale(1)',
+          transition: 'transform 0.2s ease-out'
+        }}
+      />
+      <div
+        className="fixed w-2 h-2 bg-blue-400 rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          left: mousePosition.x - 4,
+          top: mousePosition.y - 4,
+        }}
+      />
+
+      {/* Particle Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 pointer-events-none z-0"
+      />
       
       {/* Textured Background Overlay */}
-      <div className="fixed inset-0 opacity-30 pointer-events-none" style={{
+      <div className="fixed inset-0 opacity-30 pointer-events-none z-0" style={{
         backgroundImage: `
           radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
           radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
@@ -154,31 +364,57 @@ export default function Portfolio() {
         `,
         backgroundSize: '100% 100%, 100% 100%, 100% 100%, 100% 100%'
       }}></div>
-      
-      {/* Noise Texture */}
-      <div className="fixed inset-0 opacity-20 pointer-events-none" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'repeat',
-        backgroundSize: '200px 200px'
-      }}></div>
+
+      {/* Floating Shapes */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-xl animate-float"></div>
+        <div className="absolute top-40 right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-xl animate-float animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/4 w-36 h-36 bg-pink-500/10 rounded-full blur-xl animate-float animation-delay-4000"></div>
+      </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-sm z-50 border-b border-blue-500/20 transition-all duration-300">
+      <nav className="fixed top-0 w-full bg-slate-900/80 backdrop-blur-sm z-50 border-b border-blue-500/20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+            <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 glitch" data-text="Vikram Iyer">
               Vikram Iyer
             </span>
             
-            {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8">
-              <button onClick={() => scrollToSection('about')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">About</button>
-              <button onClick={() => scrollToSection('projects')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Projects</button>
-              <button onClick={() => scrollToSection('skills')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Skills</button>
-              <button onClick={() => scrollToSection('contact')} className="text-gray-300 hover:text-blue-400 transition-colors duration-300">Contact</button>
+              <button 
+                onClick={() => scrollToSection('about')} 
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
+              >
+                About
+              </button>
+              <button 
+                onClick={() => scrollToSection('projects')} 
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
+              >
+                Projects
+              </button>
+              <button 
+                onClick={() => scrollToSection('skills')} 
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
+              >
+                Skills
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')} 
+                className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
+              >
+                Contact
+              </button>
             </div>
 
-            {/* Mobile Menu Button */}
             <button 
               className="md:hidden text-gray-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -187,21 +423,19 @@ export default function Portfolio() {
             </button>
           </div>
 
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden py-4 space-y-2 animate-fadeIn">
-              <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">About</button>
-              <button onClick={() => scrollToSection('projects')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Projects</button>
-              <button onClick={() => scrollToSection('skills')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Skills</button>
-              <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30 transition-colors duration-300">Contact</button>
+            <div className="md:hidden py-4 space-y-2">
+              <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">About</button>
+              <button onClick={() => scrollToSection('projects')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Projects</button>
+              <button onClick={() => scrollToSection('skills')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Skills</button>
+              <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-4 py-2 text-gray-300 hover:bg-blue-900/30">Contact</button>
             </div>
           )}
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        {/* Animated Gradient Mesh Background */}
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden z-10">
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
           <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
@@ -209,22 +443,32 @@ export default function Portfolio() {
         </div>
         
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fadeInUp">
-            Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Vikram Iyer</span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6">
+            Hi, I'm <span className="text-transparent bg-clip-text gradient-shift text-glitch" data-text="Vikram Iyer">Vikram Iyer</span>
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-300 mb-4 animate-fadeInUp stagger-1">
+          <p className="text-xl sm:text-2xl text-gray-300 mb-4">
             Cognitive Science Student at UCLA
           </p>
-          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto animate-fadeInUp stagger-2">
+          <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
             UX Designer | Visual Storyteller | Creative Problem Solver
           </p>
-          <div className="flex justify-center space-x-4 flex-wrap gap-4 animate-fadeInUp stagger-3">
-            <a href="#contact" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
+          <div className="flex justify-center space-x-4 flex-wrap gap-4">
+            <MagneticButton 
+              href="#contact" 
+              className="gradient-shift text-white px-8 py-3 rounded-full font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
+            >
               Get In Touch
-            </a>
-            <a href="#projects" className="border-2 border-blue-500 text-blue-400 px-8 py-3 rounded-full font-semibold hover:bg-blue-500/10 transition-all duration-300">
+            </MagneticButton>
+            <MagneticButton 
+              href="#projects" 
+              className="border-2 border-blue-500 text-blue-400 px-8 py-3 rounded-full font-semibold hover:bg-blue-500/10 transition-all duration-300"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
+            >
               View Work
-            </a>
+            </MagneticButton>
           </div>
         </div>
       </section>
@@ -232,13 +476,15 @@ export default function Portfolio() {
       {/* About Section */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
         <div className="max-w-5xl mx-auto scroll-reveal">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center">About Me</h2>
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center hover:border-blue-500/40 transition-all duration-500 hover:shadow-xl hover:shadow-blue-500/20">
-            <div className="flex-shrink-0 transform transition-transform duration-500 hover:scale-105">
+          <h2 className="text-4xl font-bold text-white mb-12 text-center text-glitch" data-text="About Me">About Me</h2>
+          <TiltCard className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center hover:border-blue-500/40 transition-all duration-500">
+            <div className="flex-shrink-0">
               <img 
                 src="/headshot.JPG" 
                 alt="Vikram Iyer"
                 className="w-48 h-48 rounded-full object-cover border-4 border-blue-500/30 shadow-lg shadow-blue-500/20"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
               />
             </div>
             <div>
@@ -249,20 +495,19 @@ export default function Portfolio() {
                 I've designed graphics to promote events for several UCLA clubs and worked on personal Figma projects that explore user experience and visual storytelling. I'm excited to keep growing in the fields of UX design and marketing, where creativity and strategy come together to shape impactful experiences.
               </p>
             </div>
-          </div>
+          </TiltCard>
         </div>
       </section>
 
       {/* Projects Section */}
       <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal text-glitch" data-text="Featured Projects">Featured Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <div 
-                key={index} 
-                className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2"
-                style={{ animationDelay: `${index * 0.1}s` }}
+              <TiltCard
+                key={index}
+                className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
               >
                 <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
                 <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
@@ -282,41 +527,49 @@ export default function Portfolio() {
                     <Figma size={16} /> See designs below
                   </span>
                 ) : (
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group">
+                  <a 
+                    href={project.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group"
+                    onMouseEnter={() => setCursorVariant('hover')}
+                    onMouseLeave={() => setCursorVariant('default')}
+                  >
                     View Project <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </a>
                 )}
-              </div>
+              </TiltCard>
             ))}
           </div>
 
           {/* Graphics Showcase */}
           <div id="graphics" className="mt-16">
-            <h3 className="text-3xl font-bold text-white mb-8 text-center scroll-reveal">Graphic Designs</h3>
+            <h3 className="text-3xl font-bold text-white mb-8 text-center scroll-reveal text-glitch" data-text="Graphic Designs">Graphic Designs</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { src: "/cki-spotlight.png", alt: "CKI Senior Spotlight - Carter Castanha", title: "CKI Senior Spotlight" },
-                { src: "/theta-cinema.png", alt: "Theta Cinema - Superbad Screening", title: "Theta Chi Philanthropy Event" },
+                { src: "/theta-cinema.png", alt: "Theta Cinema - Superbad Screening", title: "Theta Chi Cinema Event" },
                 { src: "/game-night.png", alt: "Game Night Event", title: "Online Game Night" },
                 { src: "/battle-of-la.png", alt: "Battle of LA - UCLA vs USC Watch Party", title: "UCLA vs USC Watch Party" },
                 { src: "/bls-alumni-night.png", alt: "BLS Alumni Night", title: "BLS Alumni Night" },
                 { src: "/panel-discussion.png", alt: "Panel Discussion with Peter Kelly", title: "Panel Discussion Event" },
-                { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Menu Spotlight Graphic" },
+                { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Hot Ruby Chocolate Latte" },
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
-                { src: "/Gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
+                { src: "/gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
-                <div 
-                  key={index} 
-                  className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
-                  style={{ animationDelay: `${index * 0.05}s` }}
+                <TiltCard
+                  key={index}
+                  className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500"
                 >
                   <img 
                     src={graphic.src}
                     alt={graphic.alt}
-                    className="w-full h-auto rounded-lg mb-3 transform transition-transform duration-500 hover:scale-110"
+                    className="w-full h-auto rounded-lg mb-3"
+                    onMouseEnter={() => setCursorVariant('hover')}
+                    onMouseLeave={() => setCursorVariant('default')}
                   />
                   <p className="text-gray-300 text-sm text-center">{graphic.title}</p>
-                </div>
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -326,16 +579,17 @@ export default function Portfolio() {
       {/* Skills Section */}
       <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal">Skills & Technologies</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal text-glitch" data-text="Skills & Technologies">Skills & Technologies</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {skills.map((skill, index) => (
-              <div 
-                key={index} 
-                className="scroll-reveal bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:scale-110 hover:from-blue-500/30 hover:to-purple-500/30 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform cursor-default"
-                style={{ animationDelay: `${index * 0.05}s` }}
+              <MagneticButton
+                key={index}
+                className="scroll-reveal gradient-shift backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
+                onMouseEnter={() => setCursorVariant('hover')}
+                onMouseLeave={() => setCursorVariant('default')}
               >
                 {skill}
-              </div>
+              </MagneticButton>
             ))}
           </div>
         </div>
@@ -344,17 +598,27 @@ export default function Portfolio() {
       {/* Contact Section */}
       <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center scroll-reveal">
-          <h2 className="text-4xl font-bold text-white mb-8">Let's Connect</h2>
+          <h2 className="text-4xl font-bold text-white mb-8 text-glitch" data-text="Let's Connect">Let's Connect</h2>
           <p className="text-gray-300 text-lg mb-12">
             I'm always open to new opportunities and collaborations. Feel free to reach out!
           </p>
           <div className="flex justify-center space-x-6">
-            <a href="mailto:vikramiyer73@gmail.com" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30">
+            <MagneticButton
+              href="mailto:vikramiyer73@gmail.com"
+              className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
+            >
               <Mail size={24} className="text-blue-400" />
-            </a>
-            <a href="https://www.linkedin.com/in/vikramiyerucla/" target="_blank" rel="noopener noreferrer" className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30">
+            </MagneticButton>
+            <MagneticButton
+              href="https://www.linkedin.com/in/vikramiyerucla/"
+              className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
+              onMouseEnter={() => setCursorVariant('hover')}
+              onMouseLeave={() => setCursorVariant('default')}
+            >
               <Linkedin size={24} className="text-blue-400" />
-            </a>
+            </MagneticButton>
           </div>
         </div>
       </section>
