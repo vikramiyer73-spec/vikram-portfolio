@@ -469,16 +469,14 @@ export default function Portfolio() {
 
       {/* About Section */}
       <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
-        <div className="max-w-5xl mx-auto scroll-reveal">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center text-glitch" data-text="About Me">About Me</h2>
-          <TiltCard className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center hover:border-blue-500/40 transition-all duration-500">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-4xl font-bold text-white mb-12 text-center">About Me</h2>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/20 flex flex-col md:flex-row-reverse gap-8 items-center hover:border-blue-500/40 transition-all duration-500">
             <div className="flex-shrink-0">
               <img 
                 src="/headshot.JPG" 
                 alt="Vikram Iyer"
                 className="w-48 h-48 rounded-full object-cover border-4 border-blue-500/30 shadow-lg shadow-blue-500/20"
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
               />
             </div>
             <div>
@@ -489,19 +487,19 @@ export default function Portfolio() {
                 I've designed graphics to promote events for several UCLA clubs and worked on personal Figma projects that explore user experience and visual storytelling. I'm excited to keep growing in the fields of UX design and marketing, where creativity and strategy come together to shape impactful experiences.
               </p>
             </div>
-          </TiltCard>
+          </div>
         </div>
       </section>
 
       {/* Projects Section */}
       <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal text-glitch" data-text="Featured Projects">Featured Projects</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center">Featured Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <TiltCard
+              <div
                 key={index}
-                className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
+                className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-blue-500/20 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/20"
               >
                 <h3 className="text-2xl font-bold text-white mb-3">{project.title}</h3>
                 <p className="text-gray-300 mb-4 text-sm leading-relaxed">{project.description}</p>
@@ -526,19 +524,17 @@ export default function Portfolio() {
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="text-blue-400 hover:text-blue-300 flex items-center gap-2 transition-colors duration-300 text-sm group"
-                    onMouseEnter={() => setCursorVariant('hover')}
-                    onMouseLeave={() => setCursorVariant('default')}
                   >
                     View Project <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </a>
                 )}
-              </TiltCard>
+              </div>
             ))}
           </div>
 
           {/* Graphics Showcase */}
           <div id="graphics" className="mt-16">
-            <h3 className="text-3xl font-bold text-white mb-8 text-center scroll-reveal text-glitch" data-text="Graphic Designs">Graphic Designs</h3>
+            <h3 className="text-3xl font-bold text-white mb-8 text-center">Graphic Designs</h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { src: "/cki-spotlight.png", alt: "CKI Senior Spotlight - Carter Castanha", title: "CKI Senior Spotlight" },
@@ -551,19 +547,17 @@ export default function Portfolio() {
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
                 { src: "/gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
-                <TiltCard
+                <div
                   key={index}
-                  className="scroll-reveal bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500"
+                  className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-blue-500/20 overflow-hidden hover:border-blue-500/40 transition-all duration-500"
                 >
                   <img 
                     src={graphic.src}
                     alt={graphic.alt}
                     className="w-full h-auto rounded-lg mb-3"
-                    onMouseEnter={() => setCursorVariant('hover')}
-                    onMouseLeave={() => setCursorVariant('default')}
                   />
                   <p className="text-gray-300 text-sm text-center">{graphic.title}</p>
-                </TiltCard>
+                </div>
               ))}
             </div>
           </div>
@@ -573,17 +567,15 @@ export default function Portfolio() {
       {/* Skills Section */}
       <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-white mb-12 text-center scroll-reveal text-glitch" data-text="Skills & Technologies">Skills & Technologies</h2>
+          <h2 className="text-4xl font-bold text-white mb-12 text-center">Skills & Technologies</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {skills.map((skill, index) => (
-              <MagneticButton
+              <div
                 key={index}
-                className="scroll-reveal gradient-shift backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
-                onMouseEnter={() => setCursorVariant('hover')}
-                onMouseLeave={() => setCursorVariant('default')}
+                className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 rounded-xl px-6 py-3 text-white font-semibold hover:scale-110 hover:from-blue-500/30 hover:to-purple-500/30 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform cursor-pointer"
               >
                 {skill}
-              </MagneticButton>
+              </div>
             ))}
           </div>
         </div>
