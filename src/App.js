@@ -158,7 +158,15 @@ export default function Portfolio() {
       const rect = buttonRef.current.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width / 2;
       const y = e.clientY - rect.top - rect.height / 2;
-      setPosition({ x: x * 0.3, y: y * 0.3 });
+      const distance = Math.sqrt(x * x + y * y);
+      const maxDistance = 150; // Magnetic field radius
+      
+      if (distance < maxDistance) {
+        const strength = 1 - (distance / maxDistance);
+        setPosition({ x: x * strength * 0.5, y: y * strength * 0.5 });
+      } else {
+        setPosition({ x: 0, y: 0 });
+      }
     };
 
     const handleMouseLeave = () => {
@@ -176,8 +184,8 @@ export default function Portfolio() {
         onMouseLeave={handleMouseLeave}
         className={className}
         style={{
-          transform: `translate(${position.x}px, ${position.y}px)`,
-          transition: 'transform 0.2s ease-out'
+          transform: `translate(${position.x}px, ${position.y}px) scale(${position.x || position.y ? 1.1 : 1})`,
+          transition: 'transform 0.15s ease-out'
         }}
       >
         {children}
@@ -508,17 +516,13 @@ export default function Portfolio() {
           <div className="flex justify-center space-x-4 flex-wrap gap-4">
             <MagneticButton 
               href="#contact" 
-              className="gradient-shift text-white px-8 py-3 rounded-full font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
+              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300"
             >
               Get In Touch
             </MagneticButton>
             <MagneticButton 
               href="#projects" 
               className="border-2 border-blue-500 text-blue-400 px-8 py-3 rounded-full font-semibold hover:bg-blue-500/10 transition-all duration-300"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
             >
               View Work
             </MagneticButton>
@@ -573,7 +577,7 @@ export default function Portfolio() {
                 { src: "/panel-discussion.png", alt: "Panel Discussion with Peter Kelly", title: "Panel Discussion Event" },
                 { src: "/hot-ruby-chocolate.png", alt: "Hot Ruby Chocolate Latte Promotion", title: "Hot Ruby Chocolate Latte" },
                 { src: "/spring-menu.png", alt: "Little Ones Spring Menu", title: "Spring Menu" },
-                { src: "/Gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
+                { src: "/gradpad-badges.png", alt: "Grad Pad User Achievement Badges", title: "Grad Pad Achievement Badges" }
               ].map((graphic, index) => (
                 <GraphicCard key={index} graphic={graphic} />
               ))}
@@ -610,16 +614,12 @@ export default function Portfolio() {
             <MagneticButton
               href="mailto:vikramiyer73@gmail.com"
               className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
             >
               <Mail size={24} className="text-blue-400" />
             </MagneticButton>
             <MagneticButton
               href="https://www.linkedin.com/in/vikramiyerucla/"
               className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-full border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
-              onMouseEnter={() => setCursorVariant('hover')}
-              onMouseLeave={() => setCursorVariant('default')}
             >
               <Linkedin size={24} className="text-blue-400" />
             </MagneticButton>
