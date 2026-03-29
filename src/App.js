@@ -150,6 +150,13 @@ export default function Portfolio() {
       confidential: false
     },
     {
+      title: "Little Ones Social Media Strategy",
+      description: "In-depth analysis of Little Ones cafe's target audience and comprehensive social media growth strategy. Identified key demographics, content opportunities, and actionable tactics to increase online following and customer engagement.",
+      tags: ["Social Media Strategy", "Audience Analysis", "Marketing", "Canva"],
+      link: "https://canva.link/48om1lcif76zhmk",
+      confidential: false
+    },
+    {
       title: "Terra and Cotta Brand Kit",
       description: "Complete brand identity design for a hypothetical pottery store, including logo design, color palette, typography system, and brand guidelines to create a cohesive visual identity.",
       tags: ["Figma", "Brand Design", "Visual Identity", "Design Systems"],
