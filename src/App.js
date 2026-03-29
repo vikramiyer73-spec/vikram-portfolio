@@ -143,6 +143,13 @@ export default function Portfolio() {
       confidential: true
     },
     {
+      title: "Nexudus Competitive Analysis",
+      description: "Comprehensive competitive analysis of Nexudus, a leading co-working platform, examining features, user experience, pricing models, and market positioning to inform Grad Pad's product strategy and identify opportunities for differentiation.",
+      tags: ["Competitive Analysis", "Market Research", "Product Strategy", "Canva"],
+      link: "https://canva.link/uy4sl1xk6aa05bt",
+      confidential: false
+    },
+    {
       title: "Terra and Cotta Brand Kit",
       description: "Complete brand identity design for a hypothetical pottery store, including logo design, color palette, typography system, and brand guidelines to create a cohesive visual identity.",
       tags: ["Figma", "Brand Design", "Visual Identity", "Design Systems"],
